@@ -2,7 +2,7 @@ module counter #(
     parameter WIDTH = 8
 ) (
     input logic rst,
-    input logic clk,
+    input logic CLK,
     input logic incr,
     output logic [WIDTH-1:0] count
 );
