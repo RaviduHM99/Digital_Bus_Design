@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="master_tb_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="glbl" />
+            <top_module name="master_tb" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="0.000 ns"></ZoomStartTime>
+      <ZoomEndTime time="166.801 ns"></ZoomEndTime>
+      <Cursor1Time time="0.000 ns"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="136"></NameColumnWidth>
+      <ValueColumnWidth column_width="58"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="19" />
+   <wvobject fp_name="/master_tb/CLK" type="logic">
+      <obj_property name="ElementShortName">CLK</obj_property>
+      <obj_property name="ObjectShortName">CLK</obj_property>
+   </wvobject>
+   <wvobject fp_name="/master_tb/RSTN" type="logic">
+      <obj_property name="ElementShortName">RSTN</obj_property>
+      <obj_property name="ObjectShortName">RSTN</obj_property>
+   </wvobject>
+   <wvobject fp_name="/master_tb/dut/state" type="array">
+      <obj_property name="ElementShortName">state[2:0]</obj_property>
+      <obj_property name="ObjectShortName">state[2:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/master_tb/dut/count" type="array">
+      <obj_property name="ElementShortName">count[3:0]</obj_property>
+      <obj_property name="ObjectShortName">count[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/master_tb/B_REQ" type="logic">
+      <obj_property name="ElementShortName">B_REQ</obj_property>
+      <obj_property name="ObjectShortName">B_REQ</obj_property>
+   </wvobject>
+   <wvobject fp_name="/master_tb/B_GRANT" type="logic">
+      <obj_property name="ElementShortName">B_GRANT</obj_property>
+      <obj_property name="ObjectShortName">B_GRANT</obj_property>
+   </wvobject>
+   <wvobject fp_name="/master_tb/B_ACK" type="logic">
+      <obj_property name="ElementShortName">B_ACK</obj_property>
+      <obj_property name="ObjectShortName">B_ACK</obj_property>
+   </wvobject>
+   <wvobject fp_name="/master_tb/B_BUS_OUT" type="logic">
+      <obj_property name="ElementShortName">B_BUS_OUT</obj_property>
+      <obj_property name="ObjectShortName">B_BUS_OUT</obj_property>
+   </wvobject>
+   <wvobject fp_name="/master_tb/B_BUS_IN" type="logic">
+      <obj_property name="ElementShortName">B_BUS_IN</obj_property>
+      <obj_property name="ObjectShortName">B_BUS_IN</obj_property>
+   </wvobject>
+   <wvobject fp_name="/master_tb/M_DOUT" type="array">
+      <obj_property name="ElementShortName">M_DOUT[7:0]</obj_property>
+      <obj_property name="ObjectShortName">M_DOUT[7:0]</obj_property>
+      <obj_property name="Radix">BINARYRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/master_tb/M_DVALID" type="logic">
+      <obj_property name="ElementShortName">M_DVALID</obj_property>
+      <obj_property name="ObjectShortName">M_DVALID</obj_property>
+   </wvobject>
+   <wvobject fp_name="/master_tb/M_BSY" type="logic">
+      <obj_property name="ElementShortName">M_BSY</obj_property>
+      <obj_property name="ObjectShortName">M_BSY</obj_property>
+   </wvobject>
+   <wvobject fp_name="/master_tb/M_ADDR" type="array">
+      <obj_property name="ElementShortName">M_ADDR[15:0]</obj_property>
+      <obj_property name="ObjectShortName">M_ADDR[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/master_tb/M_RW" type="logic">
+      <obj_property name="ElementShortName">M_RW</obj_property>
+      <obj_property name="ObjectShortName">M_RW</obj_property>
+   </wvobject>
+   <wvobject fp_name="/master_tb/M_EXECUTE" type="logic">
+      <obj_property name="ElementShortName">M_EXECUTE</obj_property>
+      <obj_property name="ObjectShortName">M_EXECUTE</obj_property>
+   </wvobject>
+   <wvobject fp_name="/master_tb/M_HOLD" type="logic">
+      <obj_property name="ElementShortName">M_HOLD</obj_property>
+      <obj_property name="ObjectShortName">M_HOLD</obj_property>
+   </wvobject>
+   <wvobject fp_name="/master_tb/B_UTIL" type="logic">
+      <obj_property name="ElementShortName">B_UTIL</obj_property>
+      <obj_property name="ObjectShortName">B_UTIL</obj_property>
+   </wvobject>
+   <wvobject fp_name="/master_tb/B_RW" type="logic">
+      <obj_property name="ElementShortName">B_RW</obj_property>
+      <obj_property name="ObjectShortName">B_RW</obj_property>
+   </wvobject>
+   <wvobject fp_name="/master_tb/dut/REG_DATAOUT" type="array">
+      <obj_property name="ElementShortName">REG_DATAOUT[7:0]</obj_property>
+      <obj_property name="ObjectShortName">REG_DATAOUT[7:0]</obj_property>
+      <obj_property name="Radix">BINARYRADIX</obj_property>
+   </wvobject>
+</wave_config>
