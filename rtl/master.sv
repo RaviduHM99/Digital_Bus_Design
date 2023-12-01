@@ -105,7 +105,7 @@ module master(
                     rst <= (count == 6) ? 1'b1 : 1'b0;
                     state <= (count == 7) ? IDLE : rd_state;
                     M_DVALID <= (count == 7) ? 1'b1 : 1'b0;
-                    REG_DATAOUT[Index_RD] <= B_BUS_IN;
+                    REG_DATAOUT <= (REG_DATAOUT << 1) + B_BUS_IN;
                 end
 
                 HOLD : begin
