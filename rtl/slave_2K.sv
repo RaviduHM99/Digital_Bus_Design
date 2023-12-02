@@ -1,6 +1,6 @@
 `timescale 1ns/1ps
 
-module slvae_2K(
+module slvae_2K_00(
     input logic CLK,
     input logic RSTN,
 
@@ -13,12 +13,24 @@ module slvae_2K(
     input logic M_EXECUTE,
     input logic M_HOLD,
 
-    output logic B_UTIL,
-    input logic B_ACK,
-    output logic B_RW,
-    output logic B_DONE,//need to add ack when read over to slave to bus
-    input logic B_BUS_IN,
-    output logic B_BUS_OUT
+    input logic B_UTIL,
+    output logic B_ACK,
+    input logic B_RW,
+    //output logic B_DONE,//need to add ack when read over to slave to bus
+    output logic B_BUS_IN,
+    input logic B_BUS_OUT
 );
+
+enum logic [2:0] { IDLE, ADDRESS, ACKNAR, WRITE, ACKNWR, READ, HOLD } state;
+
+always_ff @( posedge CLK ) begin 
+    if (RSTN)
+    else begin
+        unique case (state)
+            IDLE:
+        endcase
+    end
+end
+
 
 endmodule
