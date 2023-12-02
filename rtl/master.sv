@@ -50,8 +50,8 @@ module master(
         B_RW = M_RW;
     end
 
-    always @( posedge CLK or posedge RSTN) begin
-        if (RSTN) begin
+    always @( posedge CLK or negedge RSTN) begin
+        if (!RSTN) begin
             state <= IDLE;
             rst <= 1'b1;
             incr <= 1'b0;
@@ -105,7 +105,7 @@ module master(
                     rst <= (count == 6) ? 1'b1 : 1'b0;
                     state <= (count == 7) ? IDLE : rd_state;
                     M_DVALID <= (count == 7) ? 1'b1 : 1'b0;
-                    REG_DATAOUT <= (REG_DATAOUT << 1) + B_BUS_IN;
+                    REG_DATAOUT[count] <= B_BUS_IN;
                 end
 
                 HOLD : begin

@@ -22,11 +22,12 @@ module master_tb;
 
     initial begin
         $dumpfile("master_tb.vcd"); $dumpvars;
+        RSTN <= 1'b0;
         @(posedge CLK); 
-        #1 RSTN <= 1'b1; M_HOLD <= 1'b0;
-
+        #1  M_HOLD <= 1'b0;
         #(CLK_PERIOD) 
-        RSTN <= 0; 
+        RSTN <= 1; 
+
 /*
         //////// WRITE TRANSACTION //////// 
         M_DIN <= 8'b10101101;
