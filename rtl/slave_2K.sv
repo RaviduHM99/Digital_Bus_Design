@@ -7,7 +7,8 @@ module slvae_2K(
     output logic S_DVALID, 
     output logic [7:0] S_DOUT,
 
-    input logic B_UTIL,
+    input logic AD_SEL,
+    
     output logic B_ACK,
     input logic B_RW,
     output logic B_SBSY,
@@ -27,7 +28,7 @@ module slvae_2K(
     reg [3:0][7:0] MEM_SPACE; //2^11
     
     always_comb begin
-        Adr_state = (B_UTIL) ? ACKNAR : IDLE;
+        Adr_state = (AD_SEL) ? ACKNAR : IDLE;
 
         unique case (B_RW)
             1'b0 : Ackad_state = READ;
@@ -48,7 +49,7 @@ always_ff @( posedge CLK or negedge RSTN) begin
         incr <= 1'b0;
     end
     else begin
-        incr <= (B_UTIL) ? 1'b1 : 1'b0;
+        incr <= (AD_SEL) ? 1'b1 : 1'b0;
         B_ACK <= 1'b0;
         S_DVALID <= 1'b0;
         REG_ADDRESS <= REG_ADDRESS;
@@ -58,9 +59,9 @@ always_ff @( posedge CLK or negedge RSTN) begin
 
         unique case (state)
             IDLE : begin
-                state <= (B_UTIL) ? ADDRESS : IDLE;
+                state <= (AD_SEL) ? ADDRESS : IDLE;
                 REG_ADDRESS <= 16'd0;
-                rst <= (B_UTIL) ? 1'b0 : 1'b1;
+                rst <= 1'b1;
             end
             ADDRESS : begin
                 B_SBSY <= 1'b1;

@@ -13,6 +13,8 @@ module master(
     input logic M_EXECUTE,
     input logic M_HOLD,
 
+    output logic A_ADD,
+
     output logic B_UTIL,
     input logic B_ACK,
     output logic B_RW,
@@ -61,11 +63,12 @@ module master(
             REG_DATAIN <= 8'd0;
             REG_DATAOUT <= 8'd0;
             B_BUS_OUT <= 1'b0;
+            A_ADD <= 1'b0;
         end
         else begin
             B_UTIL <= 1'b0;
             incr <= (M_EXECUTE & B_GRANT) ? 1'b1 : 1'b0;
-            rst <= 1'b0;
+            A_ADD <= 1'b0;
             //M_DVALID <= 1'b0;
             REG_ADDRESS <= M_ADDR;
             REG_DATAIN <= M_DIN;
@@ -73,6 +76,7 @@ module master(
             unique case (state)
                 IDLE : begin
                     state <= (M_EXECUTE & B_GRANT) ? ADDRESS : IDLE;
+                    rst <= 1'b0;
                 end
 
                 ADDRESS : begin
@@ -80,9 +84,11 @@ module master(
                     B_BUS_OUT <= REG_ADDRESS[count];
                     state <= (count != 15) ? ADDRESS : ACKNAR;
                     rst <= (count == 14) ? 1'b1 : 1'b0;
+                    A_ADD <= 1'b1;
                 end
 
                 ACKNAR : begin
+                    B_UTIL <= 1'b1;
                     rst <= (count == 2) ? 1'b1 : 1'b0;
                     state <= (count == 3) ? ackad_state : ACKNAR;
                 end
@@ -95,13 +101,14 @@ module master(
                 end
 
                 ACKNWR : begin
+                    B_UTIL <= 1'b1;
                     rst <= (count == 2) ? 1'b1 : 1'b0;
                     state <= (count == 3) ? ackwr_state : ACKNWR;
                     M_DVALID <= (count == 3) ? B_ACK : 1'b0;
                 end
 
                 READ : begin
-                    B_UTIL <= 1'b1;
+                    B_UTIL <= (B_GRANT) ? 1'b1 : 1'b0;
                     rst <= (count == 6) ? 1'b1 : 1'b0;
                     state <= (count == 7) ? IDLE : rd_state;
                     M_DVALID <= (count == 7) ? 1'b1 : 1'b0;
@@ -110,6 +117,7 @@ module master(
 
                 HOLD : begin
                     state <= (B_GRANT) ? READ : HOLD;
+                    rst <= 1'b1;
                 end
             endcase
         end
