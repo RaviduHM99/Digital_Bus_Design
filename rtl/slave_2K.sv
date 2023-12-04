@@ -12,7 +12,6 @@ module slvae_2K(
     output logic B_ACK,
     input logic B_RW,
     output logic B_SBSY,
-    //output logic B_DONE,//need to add ack when read over to slave to bus
     output logic B_BUS_IN,
     input logic B_BUS_OUT
 );
@@ -25,7 +24,7 @@ module slvae_2K(
     counter #(.WIDTH(WIDTH)) counter (.rst(rst), .CLK(CLK), .incr(incr), .count(count));
 
     reg [15:0] REG_ADDRESS;
-    reg [3:0][7:0] MEM_SPACE; //2^11
+    reg [2047:0][7:0] MEM_SPACE; //2^11
     
     always_comb begin
         Adr_state = (AD_SEL) ? ACKNAR : IDLE;

@@ -47,6 +47,7 @@ module master(
             1'b0 : ackad_state = (B_ACK) ? READ : ADDRESS;
             1'b1 : ackad_state = (B_ACK) ? WRITE : ADDRESS;
         endcase
+        add_state = (B_GRANT) ? ACKNAR : IDLE;
         ackwr_state = (B_ACK) ? IDLE : WRITE;
         rd_state = (B_GRANT) ? READ : HOLD;
         B_RW = M_RW;
@@ -58,7 +59,6 @@ module master(
             rst <= 1'b1;
             incr <= 1'b0;
             B_UTIL <= 1'b0;
-            //M_DVALID <= 1'b0;
             REG_ADDRESS <= 16'd0;
             REG_DATAIN <= 8'd0;
             REG_DATAOUT <= 8'd0;
@@ -69,7 +69,6 @@ module master(
             B_UTIL <= 1'b0;
             incr <= (M_EXECUTE & B_GRANT) ? 1'b1 : 1'b0;
             A_ADD <= 1'b0;
-            //M_DVALID <= 1'b0;
             REG_ADDRESS <= M_ADDR;
             REG_DATAIN <= M_DIN;
             B_BUS_OUT <= 1'b0;
@@ -82,8 +81,8 @@ module master(
                 ADDRESS : begin
                     B_UTIL <= 1'b1;
                     B_BUS_OUT <= REG_ADDRESS[count];
-                    state <= (count != 15) ? ADDRESS : ACKNAR;
-                    rst <= (count == 14) ? 1'b1 : 1'b0;
+                    state <= (count != 15 & B_GRANT) ? ADDRESS : add_state;
+                    rst <= (count == 14 | ~B_GRANT) ? 1'b1 : 1'b0;
                     A_ADD <= 1'b1;
                 end
 
@@ -109,7 +108,7 @@ module master(
 
                 READ : begin
                     B_UTIL <= (B_GRANT) ? 1'b1 : 1'b0;
-                    rst <= (count == 6) ? 1'b1 : 1'b0;
+                    rst <= (count == 6 | ~B_GRANT) ? 1'b1 : 1'b0;
                     state <= (count == 7) ? IDLE : rd_state;
                     M_DVALID <= (count == 7) ? 1'b1 : 1'b0;
                     REG_DATAOUT[count] <= B_BUS_IN;
@@ -117,7 +116,7 @@ module master(
 
                 HOLD : begin
                     state <= (B_GRANT) ? READ : HOLD;
-                    rst <= 1'b1;
+                    rst <= 1'b0;
                 end
             endcase
         end
