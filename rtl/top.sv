@@ -13,9 +13,13 @@ module top(
     input logic M_EXECUTE,
     input logic M_HOLD,
 
+    input logic B_SPLIT,///slave1
+    input logic B_SPL_RESUME,////
+
     output logic S_DVALID, 
     output logic [7:0] S_DOUT,
     input logic S_SPLIT
+
 
 );
     wire B_UTIL;
@@ -31,12 +35,10 @@ module top(
     wire B_ACK;
     wire B_RW;
     logic [2:0] B_SBSY;
-    wire B_SPLIT;
-    wire B_SPL_RESUME;
     wire B_BUS_IN;
     logic [2:0] AD_SEL;
     wire B_READY;
-    assign B_SBSY[2:1] = 2'b0;
+    assign B_SBSY[1:0] = 2'b0;
 
     master M_dut (
         .CLK(CLK),
@@ -77,7 +79,7 @@ module top(
         .B_BUS_OUT(B_BUS_OUT)
     );
 
-    slvae_4K_sp S1_dut (
+    slave_2K S3_dut (
         .CLK(CLK),
         .RSTN(RSTN),
         .S_DVALID(S_DVALID),
@@ -86,10 +88,8 @@ module top(
         .AD_SEL(AD_SEL[0]),
         .B_ACK(B_ACK),
         .B_RW(B_RW),
-        .B_SBSY(B_SBSY[0]),
-        .B_SPLIT(B_SPLIT),
+        .B_SBSY(B_SBSY[2]),
         .B_READY(B_READY), 
-        .B_SPL_RESUME(B_SPL_RESUME),
         .B_BUS_IN(B_BUS_IN),
         .B_BUS_OUT(B_BUS_OUT)
     );

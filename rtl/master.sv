@@ -32,6 +32,10 @@ module master(
     logic [WIDTH-1:0] count;
     counter #(.WIDTH(WIDTH)) counter (.rst(rst), .CLK(CLK), .incr(incr), .count(count));
 
+    logic rst1, incr1;
+    logic [WIDTH-1:0] count1;
+    counter #(.WIDTH(WIDTH)) counter1 (.rst(rst1), .CLK(CLK), .incr(incr1), .count(count1));
+
     reg [15:0] REG_ADDRESS;
     reg [7:0] REG_DATAIN;
     reg [7:0] REG_DATAOUT;
@@ -60,6 +64,8 @@ module master(
             state <= IDLE;
             rst <= 1'b1;
             incr <= 1'b0;
+            rst1 <= 1'b1;
+            incr1 <= 1'b0;
             B_UTIL <= 1'b0;
             REG_ADDRESS <= 16'd0;
             REG_DATAIN <= 8'd0;
@@ -67,20 +73,24 @@ module master(
             B_BUS_OUT <= 1'b0;
             A_ADD <= 1'b0;
             B_DONE <= 1'b0;
+            M_DVALID <= 1'b0;
         end
         else begin
             B_UTIL <= 1'b0;
             incr <= (M_EXECUTE & B_GRANT) ? 1'b1 : 1'b0;
             A_ADD <= 1'b0;
             REG_ADDRESS <= M_ADDR;
-            REG_DATAIN <= M_DIN;
+            REG_DATAIN <= M_DIN;//////
             B_BUS_OUT <= 1'b0;
-            
+            M_DVALID <= M_DVALID;
+            rst1 <= 1'b1;
+            incr1 <= 1'b0;
             unique case (state)
                 IDLE : begin
                     state <= (M_EXECUTE & B_GRANT) ? ADDRESS : IDLE;
                     rst <= 1'b0;
                     B_DONE <= (M_EXECUTE) ? 1'b0 : B_DONE;
+                    M_DVALID <= (M_EXECUTE) ? 1'b0 : 1'b1; ////check this
                 end
 
                 ADDRESS : begin
@@ -97,8 +107,8 @@ module master(
 
                 ACKNAR : begin
                     B_UTIL <= 1'b1;
-                    rst <= (count == 2 | B_ACK) ? 1'b1 : 1'b0;
-                    state <= (count == 3 | B_ACK) ? ackad_state : ACKNAR;
+                    rst <= (count == 2) ? 1'b1 : 1'b0;
+                    state <= (count == 3 & B_ACK) ? ackad_state : ACKNAR;
                     B_DONE <= 1'b0;
                 end
 
@@ -111,25 +121,27 @@ module master(
                 end
 
                 ACKNWR : begin
-                    B_UTIL <= 1'b1;
-                    rst <= (count == 2) ? 1'b1 : 1'b0;
-                    state <= (count == 3) ? ackwr_state : ACKNWR;
-                    M_DVALID <= (count == 3) ? B_ACK : 1'b0;
+                    B_UTIL <= (B_ACK) ? 1'b0 : 1'b1;
+                    rst <= (count == 1 | B_ACK) ? 1'b1 : 1'b0;
+                    state <= (count == 2 | B_ACK) ? ackwr_state : ACKNWR;
+                    M_DVALID <= (count == 2 | B_ACK) ? B_ACK : 1'b0;
                     B_DONE <= (B_ACK) ? 1'b1 : 1'b0;
                 end
 
                 READ : begin
-                    B_UTIL <= (B_GRANT) ? 1'b1 : 1'b0;
-                    rst <= (count == 6 | ~B_GRANT) ? 1'b1 : 1'b0;
-                    state <= (count == 7) ? IDLE : rd_state;
-                    M_DVALID <= (count == 7) ? 1'b1 : 1'b0;
-                    REG_DATAOUT[count] <= B_BUS_IN;
-                    B_DONE <= (count == 7) ? 1'b1 : 1'b0;
+                    incr1 <= (M_EXECUTE & B_GRANT) ? 1'b1 : 1'b0;
+                    B_UTIL <= (B_GRANT & count1 < 5) ? 1'b1 : 1'b0;
+                    rst1 <= (count1 == 6 | ~B_GRANT) ? 1'b1 : 1'b0;
+                    state <= (count1 == 7) ? IDLE : rd_state;
+                    M_DVALID <= (count1 == 7) ? 1'b1 : 1'b0;
+                    REG_DATAOUT[count1] <= B_BUS_IN;
+                    B_DONE <= (count1 == 7) ? 1'b1 : 1'b0;
+                    rst <= 1'b1;
                 end
 
                 HOLD : begin
                     state <= (B_GRANT) ? READ : HOLD;
-                    rst <= 1'b0;
+                    rst1 <= 1'b0;
                 end
             endcase
         end

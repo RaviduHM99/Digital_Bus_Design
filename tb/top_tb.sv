@@ -43,50 +43,29 @@ module top_tb;
         #(CLK_PERIOD*2)
         #(CLK_PERIOD*10)
         #(CLK_PERIOD*1)
-        #(CLK_PERIOD*1)
+        #(CLK_PERIOD*2)
         M_HOLD <= 1'b0;
         M_EXECUTE <= 1'b0;
-        #(CLK_PERIOD*3) 
-/*
+        #(CLK_PERIOD*8)
+
         //////// READ TRANSACTION ////////
         M_ADDR <= 16'b1101010101010101;
         M_RW <= 1'b0;
         M_EXECUTE <= 1'b0;
         M_HOLD <= 1'b1;
 
-        B_ACK <= 1'b0;
-        B_SBSY <= 3'b0;
+        S_SPLIT <= 1'b0;
 
         #(CLK_PERIOD)
         M_EXECUTE <= 1'b1;
-        B_SBSY <= 3'b010;
-
         #(CLK_PERIOD*19)
-        B_ACK <= 1'b1;
+        #(CLK_PERIOD*2)
+        #(CLK_PERIOD*10)
         #(CLK_PERIOD*1)
-        B_BUS_IN <= 1'b1;
-        #(CLK_PERIOD)
-        
-        B_BUS_IN <= 1'b0;
-        #(CLK_PERIOD)
-        B_ACK <= 1'b0;
-        B_BUS_IN <= 1'b1;
-        #(CLK_PERIOD)
-        B_BUS_IN <= 1'b0;
-        #(CLK_PERIOD)
-        B_BUS_IN <= 1'b1;
-        #(CLK_PERIOD)
-        B_BUS_IN <= 1'b1;
-        #(CLK_PERIOD)
-        B_BUS_IN <= 1'b0;
-        #(CLK_PERIOD)
-        B_BUS_IN <= 1'b1;
-        #(CLK_PERIOD)
-        B_BUS_IN <= 1'bz;
-        B_SBSY <= 3'b010;
+        #(CLK_PERIOD*2)
         M_HOLD <= 1'b0;
         M_EXECUTE <= 1'b0;
-        #(CLK_PERIOD*9)*/
+        #(CLK_PERIOD*8) 
         $finish();
     end
     

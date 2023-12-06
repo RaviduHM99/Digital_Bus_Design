@@ -73,7 +73,7 @@ always_ff @( posedge CLK or negedge RSTN) begin
             end
             ACKNAR : begin
                 B_SBSY <= 1'b1;
-                B_ACK <= (count != 2) ? 1'b1 : 1'b0;
+                B_ACK <= (count == 0 ) ? 1'b1 : 1'b0;
                 rst <= (count == 2) ? 1'b1 : 1'b0;
                 state <= (count == 2) ? Ackad_state : ACKNAR; 
             end 
