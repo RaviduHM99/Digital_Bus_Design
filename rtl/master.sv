@@ -19,11 +19,12 @@ module master(
     input logic B_ACK,
     output logic B_RW,
     output logic B_REQ,
-    input logic B_GRANT,  //need to add ack when read over to slave to bus
+    output logic B_DONE, 
+    input logic B_GRANT,  
     input logic B_BUS_IN,
     output logic B_BUS_OUT
 );
-    enum logic [2:0] { IDLE, ADDRESS, ACKNAR, WRITE, ACKNWR, READ, HOLD } state, ackad_state, ackwr_state, rd_state;
+    enum logic [2:0] { IDLE, ADDRESS, ACKNAR, WRITE, ACKNWR, READ, HOLD } state, add_state, ackad_state, ackwr_state, rd_state;
 
     localparam WIDTH = 4;
     logic rst, incr;
@@ -64,6 +65,7 @@ module master(
             REG_DATAOUT <= 8'd0;
             B_BUS_OUT <= 1'b0;
             A_ADD <= 1'b0;
+            B_DONE <= 1'b0;
         end
         else begin
             B_UTIL <= 1'b0;
@@ -72,10 +74,12 @@ module master(
             REG_ADDRESS <= M_ADDR;
             REG_DATAIN <= M_DIN;
             B_BUS_OUT <= 1'b0;
+            
             unique case (state)
                 IDLE : begin
                     state <= (M_EXECUTE & B_GRANT) ? ADDRESS : IDLE;
                     rst <= 1'b0;
+                    B_DONE <= (M_EXECUTE) ? 1'b0 : B_DONE;
                 end
 
                 ADDRESS : begin
@@ -83,13 +87,15 @@ module master(
                     B_BUS_OUT <= REG_ADDRESS[count];
                     state <= (count != 15 & B_GRANT) ? ADDRESS : add_state;
                     rst <= (count == 14 | ~B_GRANT) ? 1'b1 : 1'b0;
-                    A_ADD <= 1'b1;
+                    A_ADD <= (count < 2) ? 1'b1 : 1'b0;
+                    B_DONE <= 1'b0;
                 end
 
                 ACKNAR : begin
                     B_UTIL <= 1'b1;
-                    rst <= (count == 2) ? 1'b1 : 1'b0;
-                    state <= (count == 3) ? ackad_state : ACKNAR;
+                    rst <= (count == 2 | B_ACK) ? 1'b1 : 1'b0;
+                    state <= (count == 3 | B_ACK) ? ackad_state : ACKNAR;
+                    B_DONE <= 1'b0;
                 end
 
                 WRITE : begin
@@ -97,6 +103,7 @@ module master(
                     B_BUS_OUT <= REG_DATAIN[count];
                     rst <= (count == 6) ? 1'b1 : 1'b0;
                     state <= (count != 7) ? WRITE : ACKNWR;
+                    B_DONE <= 1'b0;
                 end
 
                 ACKNWR : begin
@@ -104,6 +111,7 @@ module master(
                     rst <= (count == 2) ? 1'b1 : 1'b0;
                     state <= (count == 3) ? ackwr_state : ACKNWR;
                     M_DVALID <= (count == 3) ? B_ACK : 1'b0;
+                    B_DONE <= (B_ACK) ? 1'b1 : 1'b0;
                 end
 
                 READ : begin
@@ -112,6 +120,7 @@ module master(
                     state <= (count == 7) ? IDLE : rd_state;
                     M_DVALID <= (count == 7) ? 1'b1 : 1'b0;
                     REG_DATAOUT[count] <= B_BUS_IN;
+                    B_DONE <= (count == 7) ? 1'b1 : 1'b0;
                 end
 
                 HOLD : begin

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="Address_Decoder_tb_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="Address_Decoder_tb" />
+            <top_module name="glbl" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="114.000 ns"></ZoomStartTime>
+      <ZoomEndTime time="332.601 ns"></ZoomEndTime>
+      <Cursor1Time time="195.000 ns"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="136"></NameColumnWidth>
+      <ValueColumnWidth column_width="58"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="13" />
+   <wvobject fp_name="/Address_Decoder_tb/CLK" type="logic">
+      <obj_property name="ElementShortName">CLK</obj_property>
+      <obj_property name="ObjectShortName">CLK</obj_property>
+   </wvobject>
+   <wvobject fp_name="/Address_Decoder_tb/RSTN" type="logic">
+      <obj_property name="ElementShortName">RSTN</obj_property>
+      <obj_property name="ObjectShortName">RSTN</obj_property>
+   </wvobject>
+   <wvobject fp_name="/Address_Decoder_tb/B_UTIL" type="logic">
+      <obj_property name="ElementShortName">B_UTIL</obj_property>
+      <obj_property name="ObjectShortName">B_UTIL</obj_property>
+   </wvobject>
+   <wvobject fp_name="/Address_Decoder_tb/AD_SEL" type="array">
+      <obj_property name="ElementShortName">AD_SEL[2:0]</obj_property>
+      <obj_property name="ObjectShortName">AD_SEL[2:0]</obj_property>
+      <obj_property name="Radix">BINARYRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/Address_Decoder_tb/dut/SLAVE_SEL" type="array">
+      <obj_property name="ElementShortName">SLAVE_SEL[1:0]</obj_property>
+      <obj_property name="ObjectShortName">SLAVE_SEL[1:0]</obj_property>
+      <obj_property name="Radix">BINARYRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/Address_Decoder_tb/dut/valid" type="logic">
+      <obj_property name="ElementShortName">valid</obj_property>
+      <obj_property name="ObjectShortName">valid</obj_property>
+   </wvobject>
+   <wvobject fp_name="/Address_Decoder_tb/dut/rst" type="logic">
+      <obj_property name="ElementShortName">rst</obj_property>
+      <obj_property name="ObjectShortName">rst</obj_property>
+   </wvobject>
+   <wvobject fp_name="/Address_Decoder_tb/dut/incr" type="logic">
+      <obj_property name="ElementShortName">incr</obj_property>
+      <obj_property name="ObjectShortName">incr</obj_property>
+   </wvobject>
+   <wvobject fp_name="/Address_Decoder_tb/A_ADD" type="logic">
+      <obj_property name="ElementShortName">A_ADD</obj_property>
+      <obj_property name="ObjectShortName">A_ADD</obj_property>
+   </wvobject>
+   <wvobject fp_name="/Address_Decoder_tb/B_BUS_OUT" type="logic">
+      <obj_property name="ElementShortName">B_BUS_OUT</obj_property>
+      <obj_property name="ObjectShortName">B_BUS_OUT</obj_property>
+   </wvobject>
+   <wvobject fp_name="/Address_Decoder_tb/B_SBSY" type="logic">
+      <obj_property name="ElementShortName">B_SBSY</obj_property>
+      <obj_property name="ObjectShortName">B_SBSY</obj_property>
+   </wvobject>
+   <wvobject fp_name="/Address_Decoder_tb/SPL_4K_SEL" type="logic">
+      <obj_property name="ElementShortName">SPL_4K_SEL</obj_property>
+      <obj_property name="ObjectShortName">SPL_4K_SEL</obj_property>
+   </wvobject>
+   <wvobject fp_name="/Address_Decoder_tb/dut/counter/COUNTER" type="array">
+      <obj_property name="ElementShortName">COUNTER[3:0]</obj_property>
+      <obj_property name="ObjectShortName">COUNTER[3:0]</obj_property>
+   </wvobject>
+</wave_config>

@@ -1,6 +1,6 @@
 `timescale 1ns/1ps
 
-module slvae_4K(
+module slave_4K(
     input logic CLK,
     input logic RSTN,
 
@@ -24,7 +24,7 @@ module slvae_4K(
     counter #(.WIDTH(WIDTH)) counter (.rst(rst), .CLK(CLK), .incr(incr), .count(count));
 
     reg [15:0] REG_ADDRESS;
-    reg [2047:0][7:0] MEM_SPACE; //2^12
+    reg [4095:0][7:0] MEM_SPACE; //2^12
     
     always_comb begin
         Adr_state = (AD_SEL) ? ACKNAR : IDLE;
@@ -35,6 +35,9 @@ module slvae_4K(
         endcase
     end
 
+    //assign S_DOUT = MEM_SPACE[REG_ADDRESS];
+    assign S_DOUT = 8'd0;
+
 always_ff @( posedge CLK or negedge RSTN) begin 
     if (!RSTN) begin
         rst <= 1'b1;
@@ -44,7 +47,7 @@ always_ff @( posedge CLK or negedge RSTN) begin
         B_SBSY <= 1'b0;
         B_BUS_IN <= 1'b0;
         S_DVALID <= 1'b0;
-        S_DOUT <= 'd0;
+        state <= IDLE;
         incr <= 1'b0;
     end
     else begin
@@ -60,7 +63,7 @@ always_ff @( posedge CLK or negedge RSTN) begin
             IDLE : begin
                 state <= (AD_SEL) ? ADDRESS : IDLE;
                 REG_ADDRESS <= 16'd0;
-                rst <= 1'b1;
+                rst <= 1'b0;
             end
             ADDRESS : begin
                 B_SBSY <= 1'b1;

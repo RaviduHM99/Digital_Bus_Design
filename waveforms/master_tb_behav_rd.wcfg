@@ -12,14 +12,14 @@
    </db_ref_list>
    <zoom_setting>
       <ZoomStartTime time="0.000 ns"></ZoomStartTime>
-      <ZoomEndTime time="166.801 ns"></ZoomEndTime>
-      <Cursor1Time time="0.000 ns"></Cursor1Time>
+      <ZoomEndTime time="419.001 ns"></ZoomEndTime>
+      <Cursor1Time time="64.500 ns"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="136"></NameColumnWidth>
+      <NameColumnWidth column_width="132"></NameColumnWidth>
       <ValueColumnWidth column_width="58"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="19" />
+   <WVObjectSize size="21" />
    <wvobject fp_name="/master_tb/CLK" type="logic">
       <obj_property name="ElementShortName">CLK</obj_property>
       <obj_property name="ObjectShortName">CLK</obj_property>
@@ -97,5 +97,13 @@
       <obj_property name="ElementShortName">REG_DATAOUT[7:0]</obj_property>
       <obj_property name="ObjectShortName">REG_DATAOUT[7:0]</obj_property>
       <obj_property name="Radix">BINARYRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/master_tb/dut/B_DONE" type="logic">
+      <obj_property name="ElementShortName">B_DONE</obj_property>
+      <obj_property name="ObjectShortName">B_DONE</obj_property>
+   </wvobject>
+   <wvobject fp_name="/master_tb/dut/A_ADD" type="logic">
+      <obj_property name="ElementShortName">A_ADD</obj_property>
+      <obj_property name="ObjectShortName">A_ADD</obj_property>
    </wvobject>
 </wave_config>

@@ -10,7 +10,7 @@ module master_tb;
     logic [15:0] M_ADDR;
     logic M_RW, M_EXECUTE, M_HOLD;
 
-    logic B_UTIL, B_ACK,B_RW, B_REQ, B_GRANT;
+    logic B_UTIL, A_ADD, B_ACK, B_RW, B_DONE, B_REQ, B_GRANT;
     logic B_BUS_IN;
     logic B_BUS_OUT;
 

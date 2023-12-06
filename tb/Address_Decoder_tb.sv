@@ -5,14 +5,14 @@ module Address_Decoder_tb;
 
     logic CLK=0, RSTN=0;
 
-    logic B_UTIL,
-    logic [3:0] AD_SEL,
-    logic A_ADD,
-    logic B_BUS_OUT,
-    logic B_SBSY, //split one
-    logic 4K_SPL_SEL
+    logic B_UTIL;
+    logic [2:0] AD_SEL;
+    logic A_ADD;
+    logic B_BUS_OUT;
+    logic B_SBSY; 
+    logic SPL_4K_SEL;
 
-    master dut (.*);
+    Address_Decoder dut (.*);
 
     initial forever begin
         #(CLK_PERIOD/2) CLK <= ~CLK;
@@ -22,77 +22,102 @@ module Address_Decoder_tb;
         $dumpfile("master_tb.vcd"); $dumpvars;
         RSTN <= 1'b0;
         @(posedge CLK); 
-        #1  M_HOLD <= 1'b0;
+        #1 
+        B_UTIL <= 1'b0; 
+        A_ADD <= 1'b0; 
+        B_BUS_OUT <= 1'b0; 
+        B_SBSY <= 1'b0; 
+        #(CLK_PERIOD) //Select 4k split slave no busy
+        RSTN <= 1'b1; 
+        B_UTIL <= 1'b1; 
+        A_ADD <= 1'b1; 
+        B_BUS_OUT <= 1'b1; 
+        B_SBSY <= 1'b0;
+         
         #(CLK_PERIOD) 
-        RSTN <= 1; 
-
-/*
-        //////// WRITE TRANSACTION //////// 
-        M_DIN <= 8'b10101101;
-        M_ADDR <= 16'b1101010101010101;
-        M_RW <= 1'b1;
-        M_EXECUTE <= 1'b0;
-        M_HOLD <= 1'b1;
-
-        B_ACK <= 1'b0;
-        B_GRANT <= 1'b0;
+        B_UTIL <= 1'b1; 
+        A_ADD <= 1'b1; 
+        B_BUS_OUT <= 1'b0; 
+        B_SBSY <= 1'b0; 
 
         #(CLK_PERIOD)
-        M_EXECUTE <= 1'b1;
-        B_GRANT <= 1'b1;
+        B_UTIL <= 1'b1; 
+        A_ADD <= 1'b0; 
+        B_BUS_OUT <= 1'b1; 
+        B_SBSY <= 1'b0;
+         
+        #(CLK_PERIOD*2) //Select 4k no split slave no busy
+        B_UTIL <= 1'b1; 
+        A_ADD <= 1'b1; 
+        B_BUS_OUT <= 1'b0; 
+        B_SBSY <= 1'b0; 
 
-        #(CLK_PERIOD*19)
-        B_ACK <= 1'b1;
-        #(CLK_PERIOD*2)
-        B_ACK <= 1'b0;
-        #(CLK_PERIOD*10)
-        B_ACK <= 1'b1;
-        #(CLK_PERIOD*1)
-        B_GRANT <= 1'b0;
-        #(CLK_PERIOD*1)
-        B_ACK <= 1'b0;
-        M_HOLD <= 1'b0;
-        M_EXECUTE <= 1'b0;
+        #(CLK_PERIOD)
+        B_UTIL <= 1'b1; 
+        A_ADD <= 1'b1; 
+        B_BUS_OUT <= 1'b1; 
+        B_SBSY <= 1'b0;
+
+        #(CLK_PERIOD)
+        B_UTIL <= 1'b1; 
+        A_ADD <= 1'b0; 
+        B_BUS_OUT <= 1'b0; 
+        B_SBSY <= 1'b0;
+
+        #(CLK_PERIOD*2) //Select 2k no split slave no busy
+        B_UTIL <= 1'b1; 
+        A_ADD <= 1'b1; 
+        B_BUS_OUT <= 1'b1; 
+        B_SBSY <= 1'b0; 
+
+        #(CLK_PERIOD)
+        B_UTIL <= 1'b1; 
+        A_ADD <= 1'b1; 
+        B_BUS_OUT <= 1'b1; 
+        B_SBSY <= 1'b0;
+        
+        #(CLK_PERIOD)
+        B_UTIL <= 1'b1; 
+        A_ADD <= 1'b0; 
+        B_BUS_OUT <= 1'b0; 
+        B_SBSY <= 1'b0;
+
+        #(CLK_PERIOD*2) //Select 4k split slave busy
+        B_UTIL <= 1'b1; 
+        A_ADD <= 1'b1; 
+        B_BUS_OUT <= 1'b1; 
+        B_SBSY <= 1'b1; 
+
+        #(CLK_PERIOD)
+        B_UTIL <= 1'b1; 
+        A_ADD <= 1'b1; 
+        B_BUS_OUT <= 1'b0; 
+        B_SBSY <= 1'b1;
+        
+        #(CLK_PERIOD) //activate SPL_$K_SEL
+        B_UTIL <= 1'b1; 
+        A_ADD <= 1'b0; 
+        B_BUS_OUT <= 1'b0; 
+        B_SBSY <= 1'b1;
+
+        #(CLK_PERIOD*2) //Select 4k no split slave - split slave busy
+        B_UTIL <= 1'b1; 
+        A_ADD <= 1'b1; 
+        B_BUS_OUT <= 1'b0; 
+        B_SBSY <= 1'b1; 
+
+        #(CLK_PERIOD)
+        B_UTIL <= 1'b1; 
+        A_ADD <= 1'b1; 
+        B_BUS_OUT <= 1'b1; 
+        B_SBSY <= 1'b1;
+        
+        #(CLK_PERIOD) //deactivate SPL_$K_SEL
+        B_UTIL <= 1'b1; 
+        A_ADD <= 1'b0; 
+        B_BUS_OUT <= 1'b0; 
+        B_SBSY <= 1'b1;
         #(CLK_PERIOD*3) 
-*/
-        //////// READ TRANSACTION ////////
-        M_ADDR <= 16'b1101010101010101;
-        M_RW <= 1'b0;
-        M_EXECUTE <= 1'b0;
-        M_HOLD <= 1'b1;
-
-        B_ACK <= 1'b0;
-        B_GRANT <= 1'b0;
-
-        #(CLK_PERIOD)
-        M_EXECUTE <= 1'b1;
-        B_GRANT <= 1'b1;
-
-        #(CLK_PERIOD*19)
-        B_ACK <= 1'b1;
-        #(CLK_PERIOD*2)
-        B_ACK <= 1'b0;
-        B_BUS_IN <= 1'b1;
-        #(CLK_PERIOD)
-        B_BUS_IN <= 1'b0;
-        #(CLK_PERIOD)
-        B_BUS_IN <= 1'b1;
-        #(CLK_PERIOD)
-        B_BUS_IN <= 1'b0;
-        #(CLK_PERIOD)
-        B_BUS_IN <= 1'b1;
-        #(CLK_PERIOD)
-        B_BUS_IN <= 1'b1;
-        #(CLK_PERIOD)
-        B_BUS_IN <= 1'b0;
-        #(CLK_PERIOD)
-        B_BUS_IN <= 1'b1;
-        #(CLK_PERIOD)
-        B_BUS_IN <= 1'bz;
-        B_GRANT <= 1'b0;
-        M_HOLD <= 1'b0;
-        M_EXECUTE <= 1'b0;
-        #(CLK_PERIOD*3)
         $finish();
     end
     

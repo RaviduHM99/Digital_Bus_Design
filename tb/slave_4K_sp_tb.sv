@@ -1,4 +1,4 @@
-module slave_4K_tb;
+module slave_4K_sp_tb;
     timeunit 1ns/1ps;
     localparam N = 16;
     localparam CLK_PERIOD = 10;
@@ -16,7 +16,11 @@ module slave_4K_tb;
     logic B_BUS_IN;
     logic B_BUS_OUT;
 
-    slave_4K dut (.*);
+    logic S_SPLIT;
+    logic B_SPLIT;
+    logic B_SPL_RESUME;
+
+    slvae_4K_sp dut (.*);
 
     initial forever begin
         #(CLK_PERIOD/2) CLK <= ~CLK;
@@ -30,6 +34,9 @@ module slave_4K_tb;
         AD_SEL <= 1'b0;
         B_RW <= 1'b1;
         B_BUS_OUT <= 1'b0;
+        S_SPLIT <= 1'b0;
+        B_SPLIT <= 1'b0;
+        B_SPL_RESUME <= 1'b0; 
 
         #(CLK_PERIOD) 
         RSTN <= 1; 
@@ -63,11 +70,15 @@ module slave_4K_tb;
         AD_SEL <= 1'b0;
         B_RW <= 1'b0;
         B_BUS_OUT <= 1'b1;
+        S_SPLIT <= 1'b0;
+        B_SPLIT <= 1'b0;
+        B_SPL_RESUME <= 1'b0; 
 
         #(CLK_PERIOD)
         AD_SEL <= 1'b1;
         B_RW <= 1'b0;
         B_BUS_OUT <= 1'b0;
+
         #(CLK_PERIOD)
 
         B_BUS_OUT <= 1'b1;
