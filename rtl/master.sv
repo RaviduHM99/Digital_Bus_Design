@@ -15,6 +15,7 @@ module master(
 
     output logic A_ADD,
 
+    input logic B_READY,
     output logic B_UTIL,
     input logic B_ACK,
     output logic B_RW,
@@ -83,8 +84,11 @@ module master(
                 end
 
                 ADDRESS : begin
+                    if (M_EXECUTE & B_GRANT & B_READY) incr <= 1'b1;
+                    else if (M_EXECUTE & B_GRANT & count < 1) incr <= 1'b1;
+                    else incr <= 1'b0; 
                     B_UTIL <= 1'b1;
-                    B_BUS_OUT <= REG_ADDRESS[count];
+                    B_BUS_OUT <= (count == 2 & ~B_READY) ? 1'd0 : REG_ADDRESS[count];
                     state <= (count != 15 & B_GRANT) ? ADDRESS : add_state;
                     rst <= (count == 14 | ~B_GRANT) ? 1'b1 : 1'b0;
                     A_ADD <= (count < 2) ? 1'b1 : 1'b0;

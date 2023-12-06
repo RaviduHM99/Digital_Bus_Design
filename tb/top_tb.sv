@@ -10,10 +10,9 @@ module top_tb;
     logic [15:0] M_ADDR;
     logic M_RW, M_EXECUTE, M_HOLD;
 
-    logic B_ACK, B_RW, B_SPL_RESUME;
-    logic B_BUS_IN, B_SPLIT;
-    logic [2:0] B_SBSY;
-    logic [2:0] AD_SEL;
+    logic S_DVALID; 
+    logic [7:0] S_DOUT;
+    logic S_SPLIT;
 
     top dut (.*);
 
@@ -28,7 +27,7 @@ module top_tb;
         #1  M_HOLD <= 1'b0;
         #(CLK_PERIOD) 
         RSTN <= 1; 
-/*
+
         //////// WRITE TRANSACTION //////// 
         M_DIN <= 8'b10101101;
         M_ADDR <= 16'b1101010101010101;
@@ -36,27 +35,19 @@ module top_tb;
         M_EXECUTE <= 1'b0;
         M_HOLD <= 1'b1;
 
-        B_ACK <= 1'b0;
-        B_SBSY <= 3'b0;
+        S_SPLIT <= 1'b0;
 
         #(CLK_PERIOD)
         M_EXECUTE <= 1'b1;
-        B_SBSY <= 3'b010;
-
         #(CLK_PERIOD*19)
-        B_ACK <= 1'b1;
         #(CLK_PERIOD*2)
-        B_ACK <= 1'b0;
         #(CLK_PERIOD*10)
-        B_ACK <= 1'b1;
         #(CLK_PERIOD*1)
-        B_SBSY <= 3'b0;
         #(CLK_PERIOD*1)
-        B_ACK <= 1'b0;
         M_HOLD <= 1'b0;
         M_EXECUTE <= 1'b0;
-        #(CLK_PERIOD*3) */
-
+        #(CLK_PERIOD*3) 
+/*
         //////// READ TRANSACTION ////////
         M_ADDR <= 16'b1101010101010101;
         M_RW <= 1'b0;
@@ -95,7 +86,7 @@ module top_tb;
         B_SBSY <= 3'b010;
         M_HOLD <= 1'b0;
         M_EXECUTE <= 1'b0;
-        #(CLK_PERIOD*9)
+        #(CLK_PERIOD*9)*/
         $finish();
     end
     

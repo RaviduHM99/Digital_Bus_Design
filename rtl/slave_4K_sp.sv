@@ -13,6 +13,7 @@ module slvae_4K_sp(
     output logic B_ACK,
     input logic B_RW,
     output logic B_SBSY,
+    output logic B_READY,
     input logic B_SPLIT,
     input logic B_SPL_RESUME,
     output logic B_BUS_IN,
@@ -26,7 +27,8 @@ module slvae_4K_sp(
     logic [WIDTH-1:0] count;
     counter #(.WIDTH(WIDTH)) counter (.rst(rst), .CLK(CLK), .incr(incr), .count(count));
 
-    reg [15:0] REG_ADDRESS;
+    reg [14:0] REG_ADDRESS;
+    reg [11:0] MEM_ADDRESS;
     reg [4095:0][7:0] MEM_SPACE; //2^12
     
     always_comb begin
@@ -36,10 +38,9 @@ module slvae_4K_sp(
             1'b0 : Ackad_state = READ;
             1'b1 : Ackad_state = WRITE;
         endcase
-        //B_SBSY = S_SPLIT;
     end
-    //assign S_DOUT = MEM_SPACE[REG_ADDRESS];
-    assign S_DOUT = 8'd0;
+
+    assign MEM_ADDRESS = REG_ADDRESS[12:1];
 
 always_ff @( posedge CLK or negedge RSTN) begin 
     if (!RSTN) begin
@@ -49,10 +50,11 @@ always_ff @( posedge CLK or negedge RSTN) begin
         B_ACK <= 1'b0;
         B_BUS_IN <= 1'b0;
         S_DVALID <= 1'b0;
-        //S_DOUT <= 'd0;
+        S_DOUT <= 8'd0;
         incr <= 1'b0;
         B_SBSY <= 1'b0;
         state <= IDLE;
+        B_READY <= 1'b0;
     end
     else begin
         incr <= (AD_SEL) ? 1'b1 : 1'b0;
@@ -62,6 +64,8 @@ always_ff @( posedge CLK or negedge RSTN) begin
         MEM_SPACE <= MEM_SPACE;
         B_BUS_IN <= 1'b0;
         B_SBSY <= 1'b0;
+        S_DOUT <= S_DOUT;
+        B_READY <= (AD_SEL) ? 1'b1 : 1'b0;
         unique case (state)
             IDLE : begin
                 state <= (AD_SEL) ? ADDRESS : IDLE;
@@ -70,9 +74,9 @@ always_ff @( posedge CLK or negedge RSTN) begin
             end
             ADDRESS : begin
 
-                REG_ADDRESS[count] <= B_BUS_OUT;
-                state <= (count != 15) ? ADDRESS : Adr_state;
-                rst <= (count == 14) ? 1'b1 : 1'b0;
+                REG_ADDRESS[count] <= (count > 0 ) ? B_BUS_OUT : REG_ADDRESS[count];
+                state <= (count != 14) ? ADDRESS : Adr_state;
+                rst <= (count == 13) ? 1'b1 : 1'b0;
             end
             ACKNAR : begin
 
@@ -83,12 +87,12 @@ always_ff @( posedge CLK or negedge RSTN) begin
             end 
             WRITE : begin
 
-                MEM_SPACE[REG_ADDRESS[13:2]] <= B_BUS_OUT;
+                MEM_SPACE[MEM_ADDRESS[13:2]] <= B_BUS_OUT;
                 rst <= (count == 6) ? 1'b1 : 1'b0;
                 state <= (count != 7) ? WRITE : ACKNWR;
             end
             ACKNWR : begin
-
+                S_DOUT <= MEM_SPACE[MEM_ADDRESS];
                 B_ACK <= (count != 2) ? 1'b1 : 1'b0;
                 rst <= (count == 1) ? 1'b1 : 1'b0;
                 state <= (count == 2) ? IDLE : ACKNWR;
@@ -97,7 +101,7 @@ always_ff @( posedge CLK or negedge RSTN) begin
             READ : begin
                 rst <= (count == 6) ? 1'b1 : 1'b0;
                 state <= (count == 7) ? IDLE : Rd_state;
-                B_BUS_IN <= MEM_SPACE[REG_ADDRESS[13:2]][count];
+                B_BUS_IN <= MEM_SPACE[MEM_ADDRESS][count];
             end
             HOLD : begin
                 state <= (B_SPLIT & ~B_SPL_RESUME) ? HOLD : READ;
