@@ -1,6 +1,6 @@
 `timescale 1ns/1ps
 
-module slvae_4K_sp(
+module slave_4K_sp(
     input logic CLK,
     input logic RSTN,
 

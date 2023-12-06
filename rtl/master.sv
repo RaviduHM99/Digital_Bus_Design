@@ -90,7 +90,7 @@ module master(
                     state <= (M_EXECUTE & B_GRANT) ? ADDRESS : IDLE;
                     rst <= 1'b0;
                     B_DONE <= (M_EXECUTE) ? 1'b0 : B_DONE;
-                    M_DVALID <= (M_EXECUTE) ? 1'b0 : 1'b1; ////check this
+                    M_DVALID <= (M_EXECUTE) ? 1'b0 : M_DVALID; ////check this
                 end
 
                 ADDRESS : begin

@@ -85,7 +85,7 @@ always_ff @( posedge CLK or negedge RSTN) begin
                 REG_ADDRESS[count] <= B_BUS_OUT;
                 state <= (count != 14 & AD_SEL) ? ADDRESS : Adr_state;
                 rst <= (count == 13) ? 1'b1 : 1'b0;
-            end
+            end 
             ACKNAR : begin
                 B_SBSY <= 1'b1;
                 incr <= (AD_SEL & ~rst & count < 1) ? 1'b1 : 1'b0;
@@ -93,7 +93,6 @@ always_ff @( posedge CLK or negedge RSTN) begin
                 B_ACK <= (count < 1) ? 1'b1 : 1'b0;
                 rst <= (count == 1) ? 1'b1 : 1'b0;
                 state <= (count == 1) ? Ackad_state : ACKNAR;  /// this count is warning
-                B_SBSY <= (count == 1 & ~B_RW) ? S_SPLIT : 1'b0;
                 incr1 <= (AD_SEL & ~rst1 & ~B_RW & count == 1) ? 1'b1 : 1'b0;
             end 
             WRITE : begin

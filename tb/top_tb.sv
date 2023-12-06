@@ -5,14 +5,24 @@ module top_tb;
 
     logic CLK=0, RSTN=0;
 
-    logic M_DVALID, M_BSY;
-    logic [7:0] M_DOUT, M_DIN;
-    logic [15:0] M_ADDR;
-    logic M_RW, M_EXECUTE, M_HOLD;
+    logic [1:0] M_DVALID, M_BSY, M_RW, M_EXECUTE, M_HOLD;
 
-    logic S_DVALID; 
+    logic [2:0] S_DVALID; 
     logic [7:0] S_DOUT;
     logic S_SPLIT;
+
+    logic [7:0] M_DOUT0;
+    logic [7:0] M_DIN0;
+    logic [15:0] M_ADDR0;
+
+    logic [7:0] M_DOUT1;
+    logic [7:0] M_DIN1;
+    logic [15:0] M_ADDR1;
+
+    logic [2:0] S_DVALID; 
+    logic [7:0] S_DOUT0;
+    logic [7:0] S_DOUT1;
+    logic [7:0] S_DOUT2;
 
     top dut (.*);
 
@@ -27,44 +37,53 @@ module top_tb;
         #1  M_HOLD <= 1'b0;
         #(CLK_PERIOD) 
         RSTN <= 1; 
-
+/*
         //////// WRITE TRANSACTION //////// 
-        M_DIN <= 8'b10101101;
-        M_ADDR <= 16'b1101010101010101;
-        M_RW <= 1'b1;
-        M_EXECUTE <= 1'b0;
-        M_HOLD <= 1'b1;
+        M_DIN0 <= 8'b10101101;
+        M_ADDR0 <= 16'b1101010101010110;
+
+        M_DIN1 <= 8'd0;
+        M_ADDR1 <= 16'd0;
+
+        M_RW <= 2'b01;
+        M_EXECUTE <= 2'b00;
+        M_HOLD <= 2'b01;
 
         S_SPLIT <= 1'b0;
 
         #(CLK_PERIOD)
-        M_EXECUTE <= 1'b1;
+        M_EXECUTE <= 2'b01;
         #(CLK_PERIOD*19)
         #(CLK_PERIOD*2)
         #(CLK_PERIOD*10)
         #(CLK_PERIOD*1)
         #(CLK_PERIOD*2)
-        M_HOLD <= 1'b0;
-        M_EXECUTE <= 1'b0;
-        #(CLK_PERIOD*8)
+        M_HOLD <= 2'b00;
+        M_EXECUTE <= 2'b00;
+        #(CLK_PERIOD*8)*/
 
         //////// READ TRANSACTION ////////
-        M_ADDR <= 16'b1101010101010101;
-        M_RW <= 1'b0;
-        M_EXECUTE <= 1'b0;
-        M_HOLD <= 1'b1;
+        M_DIN0 <= 8'd0;
+        M_ADDR0 <= 16'b1101010101010101;
 
-        S_SPLIT <= 1'b0;
+        M_DIN1 <= 8'd0;
+        M_ADDR1 <= 16'd0;
+
+        M_RW <= 2'b00;
+        M_EXECUTE <= 2'b00;
+        M_HOLD <= 2'b01;
+
+        S_SPLIT <= 1'b1;
 
         #(CLK_PERIOD)
-        M_EXECUTE <= 1'b1;
+        M_EXECUTE <= 2'b01;
         #(CLK_PERIOD*19)
         #(CLK_PERIOD*2)
         #(CLK_PERIOD*10)
         #(CLK_PERIOD*1)
         #(CLK_PERIOD*2)
-        M_HOLD <= 1'b0;
-        M_EXECUTE <= 1'b0;
+        M_HOLD <= 2'b00;
+        M_EXECUTE <= 2'b00;
         #(CLK_PERIOD*8) 
         $finish();
     end
