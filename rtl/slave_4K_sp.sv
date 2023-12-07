@@ -39,7 +39,7 @@ module slave_4K_sp(
         Adr_state = (AD_SEL) ? ACKNAR : IDLE;
         Rd_state = (B_SPLIT & ~B_SPL_RESUME) ? HOLD : READ;
         unique case (B_RW)
-            1'b0 : Ackad_state = READ;
+            1'b0 : Ackad_state = (S_SPLIT) ? HOLD : READ;
             1'b1 : Ackad_state = WRITE;
         endcase
     end
@@ -48,7 +48,7 @@ always_ff @( posedge CLK or negedge RSTN) begin
     if (!RSTN) begin
         rst <= 1'b1;
         rst1 <= 1'b1;
-        MEM_SPACE <= {4096{8'had}}; // change this
+        MEM_SPACE <= {4096{8'had}}; /////////////////////////////////// change this
         REG_ADDRESS <= 'd0;
         MEM_ADDRESS <= 12'd0;
         B_ACK <= 1'b0;
@@ -66,15 +66,14 @@ always_ff @( posedge CLK or negedge RSTN) begin
         incr1 <= 1'b0;
         rst1 <= 1'b0;
         B_ACK <= 1'b0;
-        S_DVALID <= (AD_SEL) ? 1'b0 : S_DVALID;
+        S_DVALID <= S_DVALID;
         REG_ADDRESS <= REG_ADDRESS;
         MEM_SPACE <= MEM_SPACE;
         B_BUS_IN <= 1'b0;
-        B_SBSY <= 1'b0;
         S_DOUT <= S_DOUT;
         B_READY <= (AD_SEL) ? 1'b1 : 1'b0;
         MEM_ADDRESS <= MEM_ADDRESS;
-        
+        B_SBSY <= B_SBSY;
         unique case (state)
             IDLE : begin
                 state <= (AD_SEL) ? ADDRESS : IDLE;
@@ -88,13 +87,14 @@ always_ff @( posedge CLK or negedge RSTN) begin
                 rst <= (count == 13) ? 1'b1 : 1'b0;
             end
             ACKNAR : begin
+                S_DVALID <= (AD_SEL) ? 1'b0 : S_DVALID;
                 incr <= (AD_SEL & ~rst & count < 1) ? 1'b1 : 1'b0;
                 MEM_ADDRESS <= REG_ADDRESS[12:1];
                 B_ACK <= (count < 1) ? 1'b1 : 1'b0;
                 rst <= (count == 1) ? 1'b1 : 1'b0;
                 state <= (count == 1) ? Ackad_state : ACKNAR;  /// this count is warning
-                B_SBSY <= (count == 1 & ~B_RW) ? S_SPLIT : 1'b0;
                 incr1 <= (AD_SEL & ~rst1 & ~B_RW & count == 1) ? 1'b1 : 1'b0;
+                B_SBSY <= (~B_RW) ? S_SPLIT : 1'b0;
             end 
             WRITE : begin
                 incr1 <= (AD_SEL & ~rst1) ? 1'b1 : 1'b0;
@@ -120,6 +120,7 @@ always_ff @( posedge CLK or negedge RSTN) begin
             end
             HOLD : begin
                 state <= (B_SPLIT & ~B_SPL_RESUME) ? HOLD : READ;
+                B_SBSY <= S_SPLIT;
                 rst1 <= 1'b1;
             end
         endcase

@@ -64,7 +64,7 @@ always_ff @( posedge CLK or negedge RSTN) begin
         incr1 <= 1'b0;
         rst1 <= 1'b0;
         B_ACK <= 1'b0;
-        S_DVALID <= (AD_SEL) ? 1'b0 : S_DVALID;
+        S_DVALID <= S_DVALID;
         REG_ADDRESS <= REG_ADDRESS;
         MEM_SPACE <= MEM_SPACE;
         B_BUS_IN <= 1'b0;
@@ -88,6 +88,7 @@ always_ff @( posedge CLK or negedge RSTN) begin
             end 
             ACKNAR : begin
                 B_SBSY <= 1'b1;
+                S_DVALID <= (AD_SEL) ? 1'b0 : S_DVALID;
                 incr <= (AD_SEL & ~rst & count < 1) ? 1'b1 : 1'b0;
                 MEM_ADDRESS <= REG_ADDRESS[12:1];
                 B_ACK <= (count < 1) ? 1'b1 : 1'b0;

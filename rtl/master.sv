@@ -80,7 +80,7 @@ module master(
             incr <= (M_EXECUTE & B_GRANT) ? 1'b1 : 1'b0;
             A_ADD <= 1'b0;
             REG_ADDRESS <= M_ADDR;
-            REG_DATAIN <= M_DIN;//////
+            REG_DATAIN <= M_DIN;////
             B_BUS_OUT <= 1'b0;
             M_DVALID <= M_DVALID;
             rst1 <= 1'b1;
@@ -90,23 +90,24 @@ module master(
                     state <= (M_EXECUTE & B_GRANT) ? ADDRESS : IDLE;
                     rst <= 1'b0;
                     B_DONE <= (M_EXECUTE) ? 1'b0 : B_DONE;
-                    M_DVALID <= (M_EXECUTE) ? 1'b0 : M_DVALID; ////check this
+
                 end
 
                 ADDRESS : begin
                     if (M_EXECUTE & B_GRANT & B_READY) incr <= 1'b1;
                     else if (M_EXECUTE & B_GRANT & count < 1) incr <= 1'b1;
                     else incr <= 1'b0; 
-                    B_UTIL <= 1'b1;
+                    B_UTIL <= (M_EXECUTE & B_GRANT) ? 1'b1 : 1'b0;/////*/
                     B_BUS_OUT <= (count == 2 & ~B_READY) ? 1'd0 : REG_ADDRESS[count];
                     state <= (count != 15 & B_GRANT) ? ADDRESS : add_state;
                     rst <= (count == 14 | ~B_GRANT) ? 1'b1 : 1'b0;
                     A_ADD <= (count < 2) ? 1'b1 : 1'b0;
                     B_DONE <= 1'b0;
+                    M_DVALID <= (M_EXECUTE & count > 1) ? 1'b0 : M_DVALID; ////
                 end
 
                 ACKNAR : begin
-                    B_UTIL <= 1'b1;
+                    B_UTIL <= (B_ACK & ~M_RW) ? 1'b0 : 1'b1;
                     rst <= (count == 2) ? 1'b1 : 1'b0;
                     state <= (count == 3 & B_ACK) ? ackad_state : ACKNAR;
                     B_DONE <= 1'b0;
@@ -121,7 +122,7 @@ module master(
                 end
 
                 ACKNWR : begin
-                    B_UTIL <= (B_ACK) ? 1'b0 : 1'b1;
+                    B_UTIL <= 1'b1;
                     rst <= (count == 1 | B_ACK) ? 1'b1 : 1'b0;
                     state <= (count == 2 | B_ACK) ? ackwr_state : ACKNWR;
                     M_DVALID <= (count == 2 | B_ACK) ? B_ACK : 1'b0;

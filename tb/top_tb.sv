@@ -60,23 +60,23 @@ module top_tb;
         #(CLK_PERIOD*2)
         M_HOLD <= 2'b00;
         M_EXECUTE <= 2'b00;
-        #(CLK_PERIOD*8)*/
+        #(CLK_PERIOD*8)
 
         //////// READ TRANSACTION ////////
-        M_DIN0 <= 8'd0;
-        M_ADDR0 <= 16'b1101010101010101;
-
         M_DIN1 <= 8'd0;
-        M_ADDR1 <= 16'd0;
+        M_ADDR1 <= 16'b1101010101010111;
+
+        M_DIN0 <= 8'd0;
+        M_ADDR0 <= 16'd0;
 
         M_RW <= 2'b00;
         M_EXECUTE <= 2'b00;
-        M_HOLD <= 2'b01;
+        M_HOLD <= 2'b10;
 
-        S_SPLIT <= 1'b1;
+        S_SPLIT <= 1'b0;
 
         #(CLK_PERIOD)
-        M_EXECUTE <= 2'b01;
+        M_EXECUTE <= 2'b10;
         #(CLK_PERIOD*19)
         #(CLK_PERIOD*2)
         #(CLK_PERIOD*10)
@@ -84,7 +84,60 @@ module top_tb;
         #(CLK_PERIOD*2)
         M_HOLD <= 2'b00;
         M_EXECUTE <= 2'b00;
-        #(CLK_PERIOD*8) 
+        #(CLK_PERIOD*8) */
+
+        //////// SPLIT READ TRANSACTION ////////
+        M_DIN0 <= 8'd0;
+        M_ADDR0 <= 16'b1101010101010101;
+
+        M_DIN1 <= 8'd179;
+        M_ADDR1 <= 16'b1101010101010111;
+
+        M_RW <= 2'b00;
+        M_EXECUTE <= 2'b00;
+        M_HOLD <= 2'b11;
+
+        S_SPLIT <= 1'b1;
+
+        #(CLK_PERIOD)
+        M_EXECUTE <= 2'b11;
+        #(CLK_PERIOD*19)
+        #(CLK_PERIOD*2)
+        #(CLK_PERIOD*10)
+        #(CLK_PERIOD*1)
+        #(CLK_PERIOD*24)
+        S_SPLIT <= 1'b0;
+        #(CLK_PERIOD*14) 
+        M_HOLD <= 2'b00;
+        M_EXECUTE <= 2'b00;
+        #(CLK_PERIOD*5) 
+/*
+        //////// SPLIT WRITE TRANSACTION ////////
+        M_DIN0 <= 8'd0;
+        M_ADDR0 <= 16'b1101010101010101;
+
+        M_DIN1 <= 8'd179;
+        M_ADDR1 <= 16'b1101010101010111;
+
+        M_RW <= 2'b10;
+        M_EXECUTE <= 2'b00;
+        M_HOLD <= 2'b11;
+
+        S_SPLIT <= 1'b1;
+
+        #(CLK_PERIOD)
+        M_EXECUTE <= 2'b11;
+        #(CLK_PERIOD*19)
+        #(CLK_PERIOD*2)
+        #(CLK_PERIOD*10)
+        #(CLK_PERIOD*1)
+        #(CLK_PERIOD*24)
+        S_SPLIT <= 1'b0;
+        #(CLK_PERIOD*14) 
+        M_HOLD <= 2'b00;
+        M_EXECUTE <= 2'b00;
+        #(CLK_PERIOD*5) */
+
         $finish();
     end
     

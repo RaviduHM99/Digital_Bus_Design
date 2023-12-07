@@ -51,12 +51,12 @@ module bus_arbiter(
                     B_GRANT <= (B_SBSY[0] == 1'b1 | B_DONE) ? 2'b00 : B_GRANT;
                 end
                 SPLIT : begin
-                    state <= (B_REQ == MASTER_REQ_OLD & B_SBSY[0]) ? SPLIT : SPLIT_UTIL;
-                    B_GRANT <= B_REQ ^ MASTER_REQ_OLD;
+                    state <= ((B_REQ == MASTER_REQ_OLD & B_SBSY[0]) | B_REQ == 2'b00) ? SPLIT : SPLIT_UTIL;
+                    B_GRANT <= (B_REQ == 2'b00) ? 2'b00 : B_REQ ^ MASTER_REQ_OLD;
                 end
                 SPLIT_UTIL : begin
-                    state <= (SPL_4K_SEL | B_SBSY[2:1] == 2'b00) ? SPLIT_RESUME : SPLIT_UTIL;
-                    B_GRANT <= (SPL_4K_SEL) ? 2'b00 : B_GRANT;
+                    state <= (SPL_4K_SEL | B_DONE) ? SPLIT_RESUME : SPLIT_UTIL;
+                    B_GRANT <= (SPL_4K_SEL | B_DONE) ? 2'b00 : B_GRANT;
                 end
                 SPLIT_RESUME : begin
                     state <= (B_DONE) ? IDLE : SPLIT_RESUME;

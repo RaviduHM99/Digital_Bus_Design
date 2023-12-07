@@ -37,7 +37,7 @@ module bus(
     logic B_ACK;
     logic B_BUS_IN;
     wire SPL_4K_SEL;
-    logic B_RW;
+    //logic B_RW;
 
     assign B_BUS_OUT = B_BUS_OUTM[0] | B_BUS_OUTM[1];
     assign B_BUS_OUTS = {3{B_BUS_OUT}};
@@ -56,9 +56,28 @@ module bus(
     assign B_ACK = B_ACKS[0] | B_ACKS[1] | B_ACKS[2];
     assign B_ACKM = {2{B_ACK}};
 
-    assign B_RW = B_RWM[0] | B_RWM[1];
-    assign B_RWS = {3{B_RW}};
+    //assign B_RW = B_RWM[0] | B_RWM[1];
+    //assign B_RWS = {3{B_RW}};
 
+    always_comb begin
+        unique case (AD_SEL)
+            3'b001 : begin
+                if (B_GRANT == 2'b01) B_RWS = {2'b00, B_RWM[0]};
+                else if (B_GRANT == 2'b10) B_RWS = {2'b00, B_RWM[1]};
+                else B_RWS = 3'b000;
+            end
+            3'b010 : begin
+                if (B_GRANT == 2'b01) B_RWS = {1'b0, B_RWM[0], 1'b0};
+                else if (B_GRANT == 2'b10) B_RWS = {1'b0, B_RWM[1], 1'b0};
+                else B_RWS = 3'b000;
+            end
+            3'b100 : begin
+                if (B_GRANT == 2'b01) B_RWS = {B_RWM[0], 2'b00};
+                else if (B_GRANT == 2'b10) B_RWS = {B_RWM[1], 2'b00};
+                else B_RWS = 3'b000;
+            end
+        endcase
+    end
     bus_arbiter BA (
         .CLK(CLK),
         .RSTN(RSTN),
@@ -79,7 +98,7 @@ module bus(
         .AD_SEL(AD_SEL),
         .A_ADD(A_ADD),
         .B_BUS_OUT(B_BUS_OUT),
-        .B_SBSY(B_SBSY[0]),
+        .B_SBSY(B_SBSY),
         .SPL_4K_SEL(SPL_4K_SEL)
     );
 endmodule
